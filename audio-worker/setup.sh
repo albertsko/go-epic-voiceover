@@ -16,10 +16,11 @@ fi
 pyenv install --skip-existing 3.10
 pyenv local 3.10
 
-[ -d ".venv" ] || python -m venv venv
+[ -d ".venv" ] || python -m venv .venv
 source .venv/bin/activate
 
 printf '\n\e[1m%s\e[0m\n' "Upgrading pip..."
 pip install --upgrade pip
 
-printf '\n\e[1m%s\e[0m\n' "Installing..."
+printf '\n\e[1m%s\e[0m\n' "Installing stable-audio-tools..."
+pip install stable-audio-tools
