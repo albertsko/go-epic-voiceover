@@ -22,8 +22,4 @@ source .venv/bin/activate
 printf '\n\e[1m%s\e[0m\n' "Upgrading pip..."
 pip install --upgrade pip
 
-printf '\n\e[1m%s\e[0m\n' "Installing ace-step..."
-git clone git@github.com:albertsko/ACE-Step.git || true
-cd ACE-Step
-
-pip install -e .
+printf '\n\e[1m%s\e[0m\n' "Installing..."
