@@ -5,7 +5,7 @@ import torchaudio
 from einops import rearrange
 from stable_audio_tools import get_pretrained_model
 from stable_audio_tools.inference.generation import generate_diffusion_cond
-from huggingface_hub import login, hf_hub_download
+from huggingface_hub import login
 
 
 def main():
@@ -17,30 +17,22 @@ def main():
         exit()
 
     login(token=hf_token)
-    try:
-        hf_hub_download(
-            repo_id="stabilityai/stable-audio-open-1.0",
-            filename="model.safetensors",
-            token=hf_token,
-        )
-    except Exception as e:
-        print(f"Model download error: {e}")
 
-    # --- Main Logic ---
-    if torch.backends.mps.is_available():
-        device = "mps"
-    else:
-        device = "cpu"
-
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
     model, model_config = get_pretrained_model("stabilityai/stable-audio-open-1.0")
     sample_rate = model_config["sample_rate"]
     sample_size = model_config["sample_size"]
-
     model = model.to(device)
+
+    prompt = (
+        "Epic cinematic battle music, League of Legends style, "
+        "powerful electric guitar riff, driving drums, orchestral strings, "
+        "140 BPM, intense, high-quality audio, masterpiece"
+    )
 
     conditioning = [
         {
-            "prompt": "reverse bass early hardstyle loop",
+            "prompt": prompt,
             "seconds_start": 0,
             "seconds_total": 30,
         }
@@ -59,7 +51,6 @@ def main():
     )
 
     output = rearrange(output, "b d n -> d (b n)")
-
     output = (
         output.to(torch.float32)
         .div(torch.max(torch.abs(output)))
@@ -68,7 +59,8 @@ def main():
         .to(torch.int16)
         .cpu()
     )
-    torchaudio.save("output.wav", output, sample_rate)
+    torchaudio.save("./output/output.wav", output, sample_rate)
+
     print("Audio saved to output.wav")
 
 
