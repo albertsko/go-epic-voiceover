@@ -19,8 +19,6 @@ torch.load = patched_torch_load
 model = ChatterboxTTS.from_pretrained(device=device)
 text = "Ezreal and Jinx teamed up with Ahri, Yasuo, and Teemo to take down the enemy's Nexus in an epic late-game pentakill."
 
-# high exaggeration for intensity
-# low cfg_weight for deliberate, dramatic pacing
-wav = model.generate(text, exaggeration=2.0, cfg_weight=0.3)
+wav = model.generate(text, audio_prompt_path="./input/yoda-like.wav")
 
-ta.save("./output/test-lol-epic.wav", wav, model.sr)
+ta.save("./output/yoda-like-lol.wav", wav, model.sr)
